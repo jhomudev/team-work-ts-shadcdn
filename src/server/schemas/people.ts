@@ -24,7 +24,7 @@ export const peopleInputSchema = z.object({
     })
     .trim()
     .min(5, 'Description must be at least 5 characters')
-    .max(40, 'Description must be at most 40 characters'),
+    .max(100, 'Description must be at most 100 characters'),
 })
 
 export type PeopleInputSchemaType = z.infer<typeof peopleInputSchema>

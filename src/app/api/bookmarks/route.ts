@@ -1,6 +1,5 @@
 import db from '@/lib/prisma'
-import { applicationInputSchema } from '@/server/schemas/application'
-import { bookmarkInputSchema } from '@/server/schemas/bookmark'
+import { bookmarkInputSchema } from '@/server/schemas'
 import { ApiResponse, ApiResponseData, DefaultFilterValues } from "@/server/types"
 import { getDefaultFilterValues } from "@/server/utils"
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
