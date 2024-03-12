@@ -19,7 +19,7 @@ const config = {
     },
     extend: {
       colors: {
-        bg: {
+        /* bg: {
           dark: {
             DEFAULT: '#002E39',
             soft: '#0F3942'
@@ -28,6 +28,16 @@ const config = {
             DEFAULT: '#FFFFFF',
             soft: '#F2F6F7'
           },
+        }, */
+        color: {
+          gold: {
+            DEFAULT: '#f39c12',
+            soft: '#e99816'
+          },
+          cyan: {
+            DEFAULT: '#00c4f5',
+            soft: '#0093d3',
+          }
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

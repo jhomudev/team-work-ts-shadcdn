@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "UserType" AS ENUM ('EMPLOYER', 'PEOPLE');
+CREATE TYPE "UserRole" AS ENUM ('EMPLOYER', 'PEOPLE');
 
 -- CreateEnum
 CREATE TYPE "JobMode" AS ENUM ('ON_SITE', 'REMOTE', 'HYBRID');
@@ -14,13 +14,34 @@ CREATE TYPE "Seniority" AS ENUM ('SENIOR', 'JUNIOR', 'MID_LEVEL', 'TRAINER');
 CREATE TYPE "JobStatus" AS ENUM ('DRAFT', 'OPEN', 'CLOSED');
 
 -- CreateTable
+CREATE TABLE "accounts" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "providerAccountId" TEXT NOT NULL,
+    "refresh_token" TEXT,
+    "access_token" TEXT,
+    "expires_at" INTEGER,
+    "token_type" TEXT,
+    "scope" TEXT,
+    "id_token" TEXT,
+    "session_state" TEXT,
+
+    CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "users" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "emailVerified" TIMESTAMP(3),
+    "password" TEXT,
     "image" TEXT,
-    "type" "UserType" NOT NULL,
+    "role" "UserRole" NOT NULL DEFAULT 'PEOPLE',
+    "description" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -28,29 +49,18 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "employers" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT,
-    "user_id" INTEGER NOT NULL,
+CREATE TABLE "verification_tokens" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "expires" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "employers_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "people" (
-    "id" SERIAL NOT NULL,
-    "names" TEXT NOT NULL,
-    "lastnames" TEXT NOT NULL,
-    "description" TEXT,
-    "user_id" INTEGER NOT NULL,
-
-    CONSTRAINT "people_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "verification_tokens_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "jobs" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "mode" "JobMode",
@@ -59,7 +69,7 @@ CREATE TABLE "jobs" (
     "seniority" "Seniority",
     "status" "JobStatus" NOT NULL DEFAULT 'DRAFT',
     "tags" TEXT[],
-    "employer_id" INTEGER NOT NULL,
+    "employer_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -68,8 +78,8 @@ CREATE TABLE "jobs" (
 
 -- CreateTable
 CREATE TABLE "applications" (
-    "applicant_id" INTEGER NOT NULL,
-    "job_id" INTEGER NOT NULL,
+    "applicant_id" TEXT NOT NULL,
+    "job_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "applications_pkey" PRIMARY KEY ("applicant_id","job_id")
@@ -77,12 +87,15 @@ CREATE TABLE "applications" (
 
 -- CreateTable
 CREATE TABLE "bookmarks" (
-    "people_id" INTEGER NOT NULL,
-    "job_id" INTEGER NOT NULL,
+    "people_id" TEXT NOT NULL,
+    "job_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "bookmarks_pkey" PRIMARY KEY ("people_id","job_id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "accounts_provider_providerAccountId_key" ON "accounts"("provider", "providerAccountId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
@@ -91,28 +104,25 @@ CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "employers_user_id_key" ON "employers"("user_id");
+CREATE UNIQUE INDEX "verification_tokens_token_key" ON "verification_tokens"("token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "people_user_id_key" ON "people"("user_id");
+CREATE UNIQUE INDEX "verification_tokens_email_token_key" ON "verification_tokens"("email", "token");
 
 -- AddForeignKey
-ALTER TABLE "employers" ADD CONSTRAINT "employers_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "accounts" ADD CONSTRAINT "accounts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "people" ADD CONSTRAINT "people_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "jobs" ADD CONSTRAINT "jobs_employer_id_fkey" FOREIGN KEY ("employer_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "jobs" ADD CONSTRAINT "jobs_employer_id_fkey" FOREIGN KEY ("employer_id") REFERENCES "employers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "applications" ADD CONSTRAINT "applications_applicant_id_fkey" FOREIGN KEY ("applicant_id") REFERENCES "people"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "applications" ADD CONSTRAINT "applications_applicant_id_fkey" FOREIGN KEY ("applicant_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "applications" ADD CONSTRAINT "applications_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "jobs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_people_id_fkey" FOREIGN KEY ("people_id") REFERENCES "people"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_people_id_fkey" FOREIGN KEY ("people_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "jobs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
