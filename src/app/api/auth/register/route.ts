@@ -1,14 +1,15 @@
 import db from '@/lib/prisma'
-import { registerInputSchema } from '@/server/schemas'
+import { generateVerificationToken } from '@/server/actions'
+import { userInputSchema } from '@/server/schemas'
 import { ApiResponse } from "@/server/types"
-import { UserType } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { NextRequest, NextResponse } from "next/server"
 
 export const POST = async (req: NextRequest) => {
+  try {
   const inputData = await req.json()
 
-  const validateInputData = registerInputSchema.safeParse(inputData)
+  const validateInputData = userInputSchema.safeParse(inputData)
   if (!validateInputData.success) {
     return NextResponse.json<ApiResponse>({
       ok: false,
@@ -16,18 +17,15 @@ export const POST = async (req: NextRequest) => {
       error: validateInputData.error.issues[0].message // the first error message validated
     })
   }
-  const { user, employer ,people} = validateInputData.data
-  const isEmployer = user.type === UserType.EMPLOYER
-  const isPeople = user.type === UserType.PEOPLE
-
-  try {
+    
+    const {data} = validateInputData
 
     //validate if user exist by email or username
     const existingUser = await db.user.findFirst({
       where: {
         OR: [
-          { email: user.email },
-          { username: user.username }
+          { email: data.email },
+          { username: data.username }
         ]
       }
     })
@@ -40,67 +38,33 @@ export const POST = async (req: NextRequest) => {
       })
     }
 
-    if(employer && isEmployer) {
       //create user
-      const { password, ...rest } = user
+      const { password, ...rest } = data
       const hashedPassword = await bcrypt.hash(password, 10)
       const newUser = await db.user.create({
         data: {
           password: hashedPassword, ...rest
         }
       })
+    
+    if (newUser) {
+      //generate verification token
+      await generateVerificationToken(newUser.email)
 
-      //create employer
-      const newEmployer = await db.employer.create({
-        data: {
-          userId: newUser.id,
-          ...employer
-        }
+      return NextResponse.json<ApiResponse>({
+        ok: true,
+        message: 'User registered successfully',
+        data: newUser
       })
-
-      if (newUser && newEmployer) {
-        return NextResponse.json<ApiResponse>({
-          ok: true,
-          message: 'User employer registered successfully',
-          data: newUser
-        })
-      }
     }
 
-    if (people && isPeople) {
-      //create user
-        const { password, ...rest } = user
-        const hashedPassword = await bcrypt.hash(password, 10)
-        const newUser = await db.user.create({
-          data: {
-            password: hashedPassword, ...rest
-          }
-        })
-  
-        //create employer
-        const newPeople= await db.people.create({
-          data: {
-            userId: newUser.id,
-            ...people
-          }
-        })
-      
-        if (newUser && newPeople) {
-          return NextResponse.json<ApiResponse>({
-            ok: true,
-            message: 'User people registered successfully',
-            data: newUser
-          })
-        }
-    }
-
-    // TODO: SEND TOKEN EMAIL TO VERIFIED
 
     return NextResponse.json<ApiResponse>({
       ok: false,
       message: 'User not registered'
     }, {status: 500})
   } catch (error) {
+    console.log(error)
     if (error instanceof Error) {
       return NextResponse.json<ApiResponse>({
         ok: false,

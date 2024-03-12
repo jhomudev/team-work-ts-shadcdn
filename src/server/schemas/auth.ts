@@ -1,23 +1,33 @@
-import { z } from "zod";
-import { employerInputSchema, peopleInputSchema, userInputSchema } from ".";
+import { z } from "zod"
 
-export const registerInputSchema = z.object({
-  user: userInputSchema,
-  people: peopleInputSchema.optional(),
-  employer: employerInputSchema.optional()
-}).superRefine((data, ctx) => {
-  if (data.user.type === 'EMPLOYER' && !data.employer) {
-    ctx.addIssue({
-      code: 'custom',
-      message: 'You need to provide person data',
+export const loginSchema = z.object({
+  email: z
+    .string({
+      required_error: 'Email is required',
+      invalid_type_error: 'Email must be a string'
     })
-  }
-  if (data.user.type === 'PEOPLE' && !data.people) {
-    ctx.addIssue({
-      code: 'custom',
-      message: 'You need to provide employer data',
+    .trim()
+    .min(2, 'Password is required')
+    .email('Invalid email'),
+  password: z
+    .string({
+      required_error: 'Password is required',
+      invalid_type_error: 'Password must be a string'
     })
-  }
+    .trim()
+    .min(2, 'Password is required')
 })
 
-export type RegisterInputSchemaType = z.infer<typeof registerInputSchema>
+export type LoginSchemaType = z.infer<typeof loginSchema>
+
+export const verifyEmailInputSchema = z.object({
+  token: z
+    .string({
+      required_error: 'Token is required',
+      invalid_type_error: 'Token must be a string'
+    })
+    .trim()
+    .min(2, 'Token is required')
+})
+
+export type verifyEmailInputType = z.infer<typeof verifyEmailInputSchema>
