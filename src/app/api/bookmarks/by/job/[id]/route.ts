@@ -13,44 +13,39 @@ const DEFAULT_VALUES: DefaultFilterValues = {
 
 type Params = {
   params: {
-    username: string
+    id: string
   }
 }
 
-export const GET = async (req: NextRequest, { params: { username } }: Params ) => {
+export const GET = async (req: NextRequest, { params: { id } }: Params ) => {
   const { searchParams } = req.nextUrl
-  const sp = Object.fromEntries(searchParams)
+  const searchParamsObject = Object.fromEntries(searchParams)
 
-  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({sp, defaultValues: DEFAULT_VALUES})
+  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({searchParams: searchParamsObject, defaultValues: DEFAULT_VALUES})
 
   try {
-    // validate if person exist
-    const person = await db.user.findUniqueOrThrow({
-      where: { username, type: 'PEOPLE' },
+    // validate if job exist
+    const job = await db.job.findUniqueOrThrow({
+      where: { id }
     })
 
     const [bookmarks, totalObtained, total] = await db.$transaction([
       db.bookmark.findMany({
-        where: { peopleId: person.id },
+        where: { jobId: job.id },
         orderBy: {
           createdAt: order
         },
         ...(!all && {
           take: rowsPerPage,
-          skip: rowsPerPage * (page - 1),
+          skip: rowsPerPage * (page - 1)
         }),
         select: {
           createdAt: true,
           people: {
             select: {
               id: true,
-              names: true,
-              lastnames: true,
-              user: {
-                select: {
-                  username: true
-                }
-              }
+              name: true,
+              username: true
             }
           },
           job: {
@@ -63,7 +58,7 @@ export const GET = async (req: NextRequest, { params: { username } }: Params ) =
         }
       }),
       db.bookmark.count({
-        where: { peopleId: person.id },
+        where: { jobId: job.id }
       }),
       db.bookmark.count(),
     ])

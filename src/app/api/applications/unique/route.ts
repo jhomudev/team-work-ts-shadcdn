@@ -2,33 +2,56 @@ import db from '@/lib/prisma'
 import { ApiResponse } from "@/server/types"
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { NextRequest, NextResponse } from "next/server"
+import { z } from 'zod'
+
+const schema = z.object({
+  job: z.string({
+    required_error: 'Job id is required',
+    invalid_type_error: 'Job id must be a string',
+  })
+    .trim()
+    .min(5, 'Job id must be at least 5 characters')
+    .max(50, 'Job id must be at most 50 characters'),
+  person: z.string({
+    required_error: 'Person id is required',
+    invalid_type_error: 'Person id must be a string',
+  })
+    .trim()
+    .min(5, 'Person id must be at least 5 characters')
+    .max(50, 'Person id must be at most 50 characters'),
+})
 
 export const GET = async (req: NextRequest) => {
   const { searchParams } = req.nextUrl
-  const sp = Object.fromEntries(searchParams)
+  const searchParamsObject = Object.fromEntries(searchParams)
 
-  const job = sp.job // job id
-  const person = sp.person // person people id
+  const validateSearchParams = schema.safeParse(searchParamsObject)
 
-  if (!job || !person) {
-    return NextResponse.json<ApiResponse>({ ok: false, message: 'Job or person undefined' })
+  if (!validateSearchParams.success) {
+    return NextResponse.json<ApiResponse>({
+      ok: false,
+      message: 'Input data validation failed',
+      error: validateSearchParams.error.issues[0].message // the first error message validated
+    })
   }
+
+  const { job, person } = validateSearchParams.data
 
   try {
     // validate if job and person exist
-    const jobExist =  await db.job.findUniqueOrThrow({
-      where: { id: Number(job) }
+    await db.job.findUniqueOrThrow({
+      where: { id: job }
     })
 
-    const personExist =  await db.people.findUniqueOrThrow({
-      where: { id: Number(person) }
+    await db.user.findUniqueOrThrow({
+      where: { id: person }
     })
 
     const application =  await db.application.findUniqueOrThrow({
       where: {
         applicantId_jobId: {
-          applicantId: personExist.id,
-          jobId: jobExist.id
+          applicantId: person,
+          jobId: job
         }
       },
       select: {
@@ -36,13 +59,8 @@ export const GET = async (req: NextRequest) => {
           applicant: {
             select: {
               id: true,
-              names: true,
-              lastnames: true,
-              user: {
-                select: {
-                  username: true
-                }
-              }
+              name: true,
+              username: true
             }
           },
           job: {

@@ -19,14 +19,14 @@ type Params = {
 
 export const GET = async (req: NextRequest, { params: { username } }: Params ) => {
   const { searchParams } = req.nextUrl
-  const sp = Object.fromEntries(searchParams)
+  const searchParamsObject = Object.fromEntries(searchParams)
 
-  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({sp, defaultValues: DEFAULT_VALUES})
+  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({searchParams: searchParamsObject, defaultValues: DEFAULT_VALUES})
 
   try {
-    // validate if person exist
+    // validate if person exist, only PEOPLE can have applications
     const person = await db.user.findUniqueOrThrow({
-      where: { username, type: 'PEOPLE' },
+      where: { username, role: 'PEOPLE' },
     })
 
     const [applications, totalObtained, total] = await db.$transaction([
@@ -44,13 +44,8 @@ export const GET = async (req: NextRequest, { params: { username } }: Params ) =
           applicant: {
             select: {
               id: true,
-              names: true,
-              lastnames: true,
-              user: {
-                select: {
-                  username: true
-                }
-              }
+              name: true,
+              username: true
             }
           },
           job: {

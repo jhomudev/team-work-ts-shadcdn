@@ -19,14 +19,14 @@ type Params = {
 
 export const GET = async (req: NextRequest, { params: { id } }: Params ) => {
   const { searchParams } = req.nextUrl
-  const sp = Object.fromEntries(searchParams)
+  const searchParamsObject = Object.fromEntries(searchParams)
 
-  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({sp, defaultValues: DEFAULT_VALUES})
+  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({searchParams: searchParamsObject, defaultValues: DEFAULT_VALUES})
 
   try {
     // validate if job exist
     const job = await db.job.findUniqueOrThrow({
-      where: { id: Number(id) }
+      where: { id }
     })
 
     const [applications, totalObtained, total] = await db.$transaction([
@@ -44,13 +44,8 @@ export const GET = async (req: NextRequest, { params: { id } }: Params ) => {
           applicant: {
             select: {
               id: true,
-              names: true,
-              lastnames: true,
-              user: {
-                select: {
-                  username: true
-                }
-              }
+              name: true,
+              username: true
             }
           },
           job: {

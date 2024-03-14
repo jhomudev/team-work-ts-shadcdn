@@ -15,9 +15,9 @@ const DEFAULT_VALUES: DefaultFilterValues = {
 
 export const GET = async (req: NextRequest) => {
   const { searchParams } = req.nextUrl
-  const sp = Object.fromEntries(searchParams)
+  const searchParamsObject = Object.fromEntries(searchParams)
 
-  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({sp, defaultValues: DEFAULT_VALUES})
+  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({searchParams: searchParamsObject, defaultValues: DEFAULT_VALUES})
 
   try {
     const [applications, totalObtained, total] = await db.$transaction([
@@ -34,13 +34,8 @@ export const GET = async (req: NextRequest) => {
           applicant: {
             select: {
               id: true,
-              names: true,
-              lastnames: true,
-              user: {
-                select: {
-                  username: true
-                }
-              }
+              name: true,
+              username: true
             }
           },
           job: {
@@ -107,7 +102,7 @@ export const POST = async (req: NextRequest) => {
       where: { id: jobId }
     })
 
-    await db.people.findUniqueOrThrow({
+    await db.user.findUniqueOrThrow({
       where: { id: applicantId }
     })
     //validate if application already exist
@@ -181,7 +176,7 @@ export const DELETE = async (req: NextRequest) => {
       where: { id: jobId }
     })
 
-    await db.people.findUniqueOrThrow({
+    await db.user.findUniqueOrThrow({
       where: { id: applicantId }
     })
     // validate if apllication exist

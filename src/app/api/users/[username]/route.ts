@@ -70,7 +70,7 @@ export const PUT = async (req: NextRequest, { params: { username } }: Params) =>
           id: true,
           username: true,
           email: true,
-          type: true
+          role: true
         }
       })
 
@@ -118,7 +118,7 @@ export const DELETE = async (_req: NextRequest, { params: { username } }: Params
           id: true,
           username: true,
           email: true,
-          type: true
+          role: true
         }
       })
 

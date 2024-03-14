@@ -17,20 +17,17 @@ export const GET = async (req: NextRequest) => {
   const { all, order, page, rowsPerPage } = getDefaultFilterValues({ sp, defaultValues: DEFAULT_VALUES })
   
   const search = sp.search
-  const type = sp.type === 'PEOPLE' || sp.type === 'EMPLOYER' ? sp.type : undefined
+  const role = sp.role === 'PEOPLE' || sp.role === 'EMPLOYER' ? sp.role : undefined
 
   try {
     const [users, totalObtained, total] = await db.$transaction([
       db.user.findMany({
         where: {
-          type,
+          role,
           ...(search && {
             OR: [
               {
-                employer: {name: { contains: search, mode: 'insensitive' }}
-              },
-              {
-                people: {names: {contains: search, mode: 'insensitive'}}
+                name: { contains: search, mode: 'insensitive' }
               }
             ]
           })
@@ -45,36 +42,21 @@ export const GET = async (req: NextRequest) => {
         select: {
           id: true,
           username: true,
+          name: true,
           email: true,
-          type: true,
+          role: true,
           image: true,
           createdAt: true,
           updatedAt: true,
-          people: {
-            select: {
-              id: true,
-              names: true,
-              lastnames: true
-            }
-          },
-          employer: {
-            select: {
-              id: true,
-              name: true
-            }
-          }
         }
       }),
       db.user.count({
         where: {
-          type,
+          role,
           ...(search && {
             OR: [
               {
-                employer: {name: { contains: search, mode: 'insensitive' }}
-              },
-              {
-                people: {names: {contains: search, mode: 'insensitive'}}
+                name: { contains: search, mode: 'insensitive' }
               }
             ]
           })

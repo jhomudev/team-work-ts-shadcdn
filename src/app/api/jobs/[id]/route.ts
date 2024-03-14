@@ -1,5 +1,5 @@
 import db from '@/lib/prisma'
-import { jobInputSchema, jobInputUpdateSchema } from '@/server/schemas'
+import { jobInputSchema } from '@/server/schemas'
 import { ApiResponse, ApiResponseData } from "@/server/types"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { NextRequest, NextResponse } from "next/server"
@@ -14,7 +14,7 @@ type Params = {
 export const GET = async (_req: NextRequest, {params: {id}}: Params) => {
   try {
     const job = await db.job.findUniqueOrThrow({
-      where: { id: Number(id) },
+      where: { id },
       select: {
         id: true,
         title: true,
@@ -31,12 +31,8 @@ export const GET = async (_req: NextRequest, {params: {id}}: Params) => {
           select: {
             id: true,
             name: true,
-            user: {
-              select: {
-                username: true
-              }
-            }
-          },
+            username: true
+          }
         },
         _count: {
           select: {
@@ -77,15 +73,14 @@ export const PUT = async (req: NextRequest, { params: { id } }: Params) => {
 
   try {
     const job = await db.job.findUniqueOrThrow({
-      where: { id: Number(id) },
+      where: { id },
     })
 
     if (job) {
-      // schema without employerId
-      const validateInputData = jobInputUpdateSchema.safeParse(inputData)
+      // schema without employerId, cause this field is not updatable
+      const validateInputData = jobInputSchema.omit({employerId: true}).safeParse(inputData)
 
       if (!validateInputData.success) {
-        // handle error then return
         return NextResponse.json<ApiResponse>({
           ok: false,
           message: 'Input data validation failed',
@@ -132,7 +127,7 @@ export const PUT = async (req: NextRequest, { params: { id } }: Params) => {
 export const DELETE = async (_req: NextRequest, { params: { id } }: Params) => {
   try {
     const job = await db.job.findUniqueOrThrow({
-      where: { id: Number(id) },
+      where: { id },
     })
 
     if (job) {

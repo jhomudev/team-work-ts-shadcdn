@@ -13,44 +13,39 @@ const DEFAULT_VALUES: DefaultFilterValues = {
 
 type Params = {
   params: {
-    id: string
+    username: string
   }
 }
 
-export const GET = async (req: NextRequest, { params: { id } }: Params ) => {
+export const GET = async (req: NextRequest, { params: { username } }: Params ) => {
   const { searchParams } = req.nextUrl
-  const sp = Object.fromEntries(searchParams)
+  const searchParamsObject = Object.fromEntries(searchParams)
 
-  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({sp, defaultValues: DEFAULT_VALUES})
+  const { all, order, page ,rowsPerPage} = getDefaultFilterValues({searchParams: searchParamsObject, defaultValues: DEFAULT_VALUES})
 
   try {
-    // validate if job exist
-    const job = await db.job.findUniqueOrThrow({
-      where: { id: Number(id) }
+    // validate if person exist, only PEOPLE can have bookmarks
+    const person = await db.user.findUniqueOrThrow({
+      where: { username, role: 'PEOPLE' },
     })
 
     const [bookmarks, totalObtained, total] = await db.$transaction([
       db.bookmark.findMany({
-        where: { jobId: job.id },
+        where: { peopleId: person.id },
         orderBy: {
           createdAt: order
         },
         ...(!all && {
           take: rowsPerPage,
-          skip: rowsPerPage * (page - 1)
+          skip: rowsPerPage * (page - 1),
         }),
         select: {
           createdAt: true,
           people: {
             select: {
               id: true,
-              names: true,
-              lastnames: true,
-              user: {
-                select: {
-                  username: true
-                }
-              }
+              name: true,
+              username: true
             }
           },
           job: {
@@ -63,7 +58,7 @@ export const GET = async (req: NextRequest, { params: { id } }: Params ) => {
         }
       }),
       db.bookmark.count({
-        where: { jobId: job.id }
+        where: { peopleId: person.id },
       }),
       db.bookmark.count(),
     ])

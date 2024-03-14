@@ -38,7 +38,7 @@ export const GET = async (req: NextRequest) => {
           }),
           mode, seniority, time, status,
           ...(tag && {tags: { has: tag }}),
-          employer: { user: { username: employer } }
+          employer: { username: employer }
         },
         orderBy: {
           id: order
@@ -52,11 +52,7 @@ export const GET = async (req: NextRequest) => {
             select: {
               id: true,
               name: true,
-              user: {
-                select: {
-                  username: true,
-                }
-              }
+              username: true
             }
           }
         }
@@ -68,7 +64,7 @@ export const GET = async (req: NextRequest) => {
           }),
           mode, seniority, time, status,
           ...(tag && {tags: { has: tag }}),
-          employer: { user: { username: employer } }
+          employer: { username: employer }
         }
       }),
       db.job.count()
