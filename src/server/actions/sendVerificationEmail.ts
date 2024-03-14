@@ -19,7 +19,7 @@ export const sendVerificationEmail = async ({ email, token }: Props) => {
     if (!addEmailToContacts?.success) return null
   
     const data = await resend.emails.send({
-      from: `Team Work <team@${process.env.RESEND_DOMAIN}>`,
+      from: `Team Work <jhonan@${process.env.RESEND_DOMAIN}>`,
       to: [addEmailToContacts.email],
       subject: 'Confirma tu correo',
       react: VerificationEmail({confirmLink})
