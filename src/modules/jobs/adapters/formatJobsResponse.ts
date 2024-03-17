@@ -1,0 +1,3 @@
+const formatJobsReponse = (res: any) => { 
+
+}
