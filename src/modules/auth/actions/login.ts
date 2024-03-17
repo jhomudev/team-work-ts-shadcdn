@@ -24,13 +24,25 @@ export const login = async (credentials: LoginSchemaType) => {
   } catch (error) {
     if (error instanceof AuthError) {
       if (error.cause?.err instanceof Error) {
-        return error.cause.err.message; // return "custom error"
+        return {
+          ok: false,
+          message: 'Something went wrong',
+          error : error.cause.err.message
+        }
       }
       switch (error.type) {
         case 'CredentialsSignin':
-          return 'Invalid credentials';
+          return {
+            ok: false,
+            message: 'Invalid credentials',
+            error : error.message
+          }
         default:
-          return 'Something went wrong';
+          return {
+            ok: false,
+            message: 'Something went wrong',
+            error : error.message
+          }
       }
     }
     throw error;

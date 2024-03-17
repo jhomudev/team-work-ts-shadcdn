@@ -3,10 +3,11 @@ import ThemeToggle from './ThemeToggle'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from './ui/button'
+import AuthLinks from './AuthLinks'
 
 function NavBar() {
   return (
-    <header className='border-b border-accent'>
+    <header className='outline outline-accent'>
       <div className="px-7 h-[80px] flex gap-3 items-center">
         <div className="relative flex gap-1 items-center">
           <Image src={'/logo.svg'} alt="jhomudev isotipo" width={30} height={30} />
@@ -20,9 +21,8 @@ function NavBar() {
             <li className='hover:text-color-cyan-soft font-semibold'><Link href={'/employers'}>Empleadores</Link></li>
             <li className='hover:text-color-cyan-soft font-semibold'><Link href={'/people'}>Profesionales</Link></li>
           </ul>
-          <div className="flex gap-3 items-center">
-            <Button variant={'outline'} asChild><Link href={'/auth/login'}>Ingresar</Link></Button>
-            <Button variant={'default'} asChild><Link href={'/auth/register'}>Register</Link></Button>
+          <div>
+            <AuthLinks />
           </div>
         </nav>
       </div>

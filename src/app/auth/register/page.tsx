@@ -1,6 +1,6 @@
 import { Separator } from '@/components/ui/separator'
-import NetworkAuthButton from '@/features/auth/components/NetworkAuthButton'
-import RegisterForm from '@/features/auth/components/RegisterForm'
+import NetworkAuthButton from '@/modules/auth/components/NetworkAuthButton'
+import RegisterForm from '@/modules/auth/components/RegisterForm'
 import Link from 'next/link'
 import React from 'react'
 import { networksAuth } from '../login/page'

@@ -1,6 +1,6 @@
 import { Separator } from '@/components/ui/separator'
-import LoginForm from '@/features/auth/components/LoginForm'
-import NetworkAuthButton from '@/features/auth/components/NetworkAuthButton'
+import LoginForm from '@/modules/auth/components/LoginForm'
+import NetworkAuthButton from '@/modules/auth/components/NetworkAuthButton'
 import Link from 'next/link'
 
 export type NetworkAuth= {

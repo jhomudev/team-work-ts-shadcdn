@@ -1,5 +1,5 @@
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { verifyEmailByToken } from '@/features/auth/services'
+import { verifyEmailByToken } from '@/modules/auth/services'
 import { redirect } from 'next/navigation'
 
 type Props = {
