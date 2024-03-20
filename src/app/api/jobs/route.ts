@@ -4,6 +4,7 @@ import { ApiResponse, ApiResponseData, DefaultFilterValues } from "@/server/type
 import { getDefaultFilterValues } from "@/server/utils"
 import { JobMode, JobStatus, JobTime, Seniority } from "@prisma/client"
 import { jobInputSchema } from "@/server/schemas"
+import { validateEnumValue } from "@/utils"
 
 const DEFAULT_VALUES: DefaultFilterValues = {
   all: false,
@@ -14,20 +15,19 @@ const DEFAULT_VALUES: DefaultFilterValues = {
 
 export const GET = async (req: NextRequest) => {
   const { searchParams } = req.nextUrl
-  const sp = Object.fromEntries(searchParams)
+  const searchParamsObject = Object.fromEntries(searchParams)
 
-  const { all, order, page, rowsPerPage } = getDefaultFilterValues({ sp, defaultValues: DEFAULT_VALUES })
+  const { all, order, page, rowsPerPage } = getDefaultFilterValues({ searchParams: searchParamsObject, defaultValues: DEFAULT_VALUES })
   
-  const search = sp.search
-  // put values with ternaries, cause they can be only Enums | undefined, not simple string,
-  // this is important for where cluasule query
-  const time = Object.values(JobTime).includes(sp.time as JobTime) ? sp.time as JobTime : undefined
-  const mode = Object.values(JobMode).includes(sp.mode as JobMode) ? sp.mode as JobMode : undefined
-  const seniority = Object.values(Seniority).includes(sp.seniority as Seniority) ? sp.seniority as Seniority : undefined
-  const status = Object.values(JobStatus).includes(sp.status as JobStatus) ? sp.status as JobStatus : undefined
+  const search = searchParamsObject.search
+  // validaet if values is in enums, this is important for where cluasule query
+  const time = validateEnumValue({enumObj: JobTime, value: searchParamsObject.time}) as JobTime | undefined
+  const mode = validateEnumValue({enumObj: JobMode, value: searchParamsObject.mode}) as JobMode | undefined
+  const seniority = validateEnumValue({enumObj: Seniority, value: searchParamsObject.seniority}) as Seniority | undefined
+  const status = validateEnumValue({enumObj: JobStatus, value: searchParamsObject.status})  as JobStatus | undefined
   
-  const employer = sp.employer // employer username
-  const tag = sp.tag
+  const employer = searchParamsObject.employer // employer username
+  const tag = searchParamsObject.tag
 
   try {
     const [jobs, totalObtained, total] = await db.$transaction([
