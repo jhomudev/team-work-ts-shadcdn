@@ -52,7 +52,7 @@ export const PUT = async (req: NextRequest, { params: { username } }: Params) =>
     })
 
     if (user) {
-      const validateInputData = userInputSchema.safeParse(inputData)
+      const validateInputData = userInputSchema.omit({password: true}).safeParse(inputData)
 
       if (!validateInputData.success) {
         // handle error then return

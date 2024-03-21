@@ -12,12 +12,12 @@ const DEFAULT_VALUES: DefaultFilterValues = {
 
 export const GET = async (req: NextRequest) => {
   const { searchParams } = req.nextUrl
-  const sp = Object.fromEntries(searchParams)
+  const searchParamsObject = Object.fromEntries(searchParams)
 
-  const { all, order, page, rowsPerPage } = getDefaultFilterValues({ sp, defaultValues: DEFAULT_VALUES })
+  const { all, order, page, rowsPerPage } = getDefaultFilterValues({ searchParams: searchParamsObject, defaultValues: DEFAULT_VALUES })
   
-  const search = sp.search
-  const role = sp.role === 'PEOPLE' || sp.role === 'EMPLOYER' ? sp.role : undefined
+  const search = searchParamsObject.search
+  const role = searchParamsObject.role === 'PEOPLE' || searchParamsObject.role === 'EMPLOYER' ? searchParamsObject.role : undefined
 
   try {
     const [users, totalObtained, total] = await db.$transaction([

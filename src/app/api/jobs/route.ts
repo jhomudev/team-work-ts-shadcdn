@@ -47,12 +47,29 @@ export const GET = async (req: NextRequest) => {
           take: rowsPerPage,
           skip: rowsPerPage * (page - 1),
         }),
-        include: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          mode: true,              
+          time: true,            
+          openings: true,       
+          status: true,
+          tags: true,
+          createdAt: true,
+          updatedAt: true,
+          seniority: true,
           employer: {
             select: {
               id: true,
               name: true,
-              username: true
+              username: true,
+              image: true
+            }
+          },
+          _count: {
+            select: {
+              applications: true
             }
           }
         }

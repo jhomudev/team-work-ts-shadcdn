@@ -31,7 +31,8 @@ export const GET = async (_req: NextRequest, {params: {id}}: Params) => {
           select: {
             id: true,
             name: true,
-            username: true
+            username: true,
+            image: true
           }
         },
         _count: {
