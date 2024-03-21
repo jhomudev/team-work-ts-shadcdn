@@ -2,6 +2,7 @@ import { resend } from '@/lib/mail';
 import { Resend } from 'resend';
 import { z } from 'zod';
 import { validateContactExist } from '.';
+import { env } from '@/lib/env';
 
 const schemaContact = z.object({
   email: z.string({
@@ -68,7 +69,7 @@ export const addContact: AddContact = async (contactData: Props) => {
     if (!validateIfExistContact.exist) {
       const res = await resend.contacts.create({
         ...data,
-        audienceId: process.env.RESEND_GENERAL_AUDIENCE_ID as string,
+        audienceId: env.RESEND_GENERAL_AUDIENCE_ID as string,
       })
       
       if (res.data) {

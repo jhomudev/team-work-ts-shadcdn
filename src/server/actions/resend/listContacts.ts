@@ -1,3 +1,4 @@
+import { env } from "@/lib/env"
 import { resend } from "@/lib/mail"
 
 export type EmailResponse = {
@@ -27,7 +28,7 @@ type ListContacts = () => Promise<{
 export const listContacts: ListContacts = async () => {
   try {
     const res = await resend.contacts.list({
-      audienceId: process.env.RESEND_GENERAL_AUDIENCE_ID || '',
+      audienceId: env.RESEND_GENERAL_AUDIENCE_ID,
     })
 
     if (res.error) {

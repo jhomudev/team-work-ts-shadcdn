@@ -5,6 +5,8 @@ import Google from 'next-auth/providers/google'
 import axios from 'axios'
 import { AuthSignInResponse } from "./server/types"
 import { loginSchema } from "./server/schemas"
+import { env } from "./lib/env"
+
 
 const authConfig = {
   providers: [
@@ -12,7 +14,7 @@ const authConfig = {
     async authorize(credentials) {
       const validateFields = loginSchema.safeParse(credentials)
       if (validateFields.success) {
-        const res = await axios.post<AuthSignInResponse>(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, credentials)
+        const res = await axios.post<AuthSignInResponse>(`${env.NEXT_PUBLIC_API_URL}/auth/login`, credentials)
         const { data: auth } = res
   
         if (auth.success) return auth.session
@@ -23,12 +25,12 @@ const authConfig = {
     },
   }),
     Github({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
 } satisfies NextAuthConfig

@@ -1,3 +1,4 @@
+import { env } from '@/lib/env'
 import { Body, Container, Head, Heading, Hr, Html, Img, Link, Preview, Section, Tailwind, Text } from '@react-email/components'
 
 type Props = {
@@ -13,7 +14,7 @@ function VerificationEmail({confirmLink}: Props) {
         <Body>
           <Container>
             <Img
-              src={`${process.env.NEXT_PUBLIC_APP_URL}/logo.svg`}
+              src={`${env.NEXT_PUBLIC_APP_URL}/logo.svg`}
               width={38}
               height={38}
               alt="Team Work"
@@ -37,7 +38,7 @@ function VerificationEmail({confirmLink}: Props) {
             </Text>
             <Hr />
             <Img
-              src={`${process.env.NEXT_PUBLIC_APP_URL}/logo.svg`}
+              src={`${env.NEXT_PUBLIC_APP_URL}/logo.svg`}
               width={32}
               height={32}
               style={{

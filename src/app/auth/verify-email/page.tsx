@@ -1,4 +1,5 @@
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { env } from '@/lib/env'
 import { verifyEmailByToken } from '@/modules/auth/services'
 import { redirect } from 'next/navigation'
 
@@ -10,7 +11,7 @@ type Props = {
 async function VerifyEmailPage({searchParams } : Props) {
   const { token } = searchParams
 
-  if (!token) redirect(`${process.env.NEXT_PUBLIC_APP_URL}/auth/login`)
+  if (!token) redirect(`${env.NEXT_PUBLIC_APP_URL}/auth/login`)
 
   const res = await verifyEmailByToken(token)
 

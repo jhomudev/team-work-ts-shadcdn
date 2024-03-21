@@ -1,6 +1,6 @@
+import { BaseEntity } from "@/types"
 
-export type Job = {
-  is: string
+export type JobResponse = {
   title: string
   description: string
   mode: string              
@@ -8,29 +8,72 @@ export type Job = {
   openings: string       
   status: string
   tags: string[]
-  createdAt: string,
-  updatedAt: string,
   employer: {
     id: string
     username: string
-    name: string
+    name: string,
+    image?: string
+  },
+  _count: {
+    applications: number,
+    bookmarks: number
   }
-}
-// id              String @id @default(cuid())
-//   title           String
-//   description     String
-//   mode            JobMode?  
-//   time            JobTime?
-//   openings        Int
-//   seniority       Seniority?
-//   status          JobStatus @default(DRAFT)
-//   tags            String[]
-//   employerId      String @map("employer_id")
-//   employer        User @relation(fields: [employerId], references: [id])
-//   createdAt       DateTime @default(now()) @map("created_at")
-//   updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
-//   applications    Application[]
-//   bookmarks       Bookmark[]
-export type JobInJobs = {
+} & BaseEntity
 
-}
+export type JobInJobsResponse = {
+  title: string
+  description: string
+  mode: string              
+  time: string            
+  openings: string       
+  status: string
+  tags: string[]
+  employer: {
+    id: string
+    username: string
+    name: string,
+    image?: string
+  },
+  _count: {
+    applications: number
+  }
+} & BaseEntity
+
+export type Job = {
+  title: string
+  description: string
+  mode: string              
+  time: string            
+  openings: string       
+  status: string
+  tags: string[]
+  employer: {
+    id: string
+    username: string
+    name: string,
+    image?: string
+  },
+  _count: {
+    applications: number
+    bookmarks: number
+  }
+} & BaseEntity
+
+export type JobInJobs = {
+  title: string
+  description: string
+  mode: string              
+  time: string            
+  openings: string       
+  status: string
+  tags: string[]
+  employer: {
+    id: string
+    username: string
+    name: string,
+    image?: string
+  },
+  _count: {
+    applications: number
+  }
+} & BaseEntity
