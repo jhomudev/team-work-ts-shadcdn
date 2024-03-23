@@ -55,10 +55,10 @@ export const GET = async (req: NextRequest) => {
           time: true,            
           openings: true,       
           status: true,
+          seniority: true,
           tags: true,
           createdAt: true,
           updatedAt: true,
-          seniority: true,
           employer: {
             select: {
               id: true,

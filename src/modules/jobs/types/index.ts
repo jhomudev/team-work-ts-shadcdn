@@ -1,12 +1,14 @@
 import { BaseEntity } from "@/types"
+import { JobMode, JobStatus, JobTime, Seniority } from "@prisma/client"
 
 export type JobResponse = {
   title: string
   description: string
-  mode: string              
-  time: string            
-  openings: string       
-  status: string
+  mode: JobMode              
+  time: JobTime            
+  openings: number
+  seniority: Seniority
+  status: JobStatus
   tags: string[]
   employer: {
     id: string
@@ -23,10 +25,11 @@ export type JobResponse = {
 export type JobInJobsResponse = {
   title: string
   description: string
-  mode: string              
-  time: string            
-  openings: string       
-  status: string
+  mode: JobMode              
+  time: JobTime            
+  openings: number
+  seniority: Seniority
+  status: JobStatus
   tags: string[]
   employer: {
     id: string
@@ -42,10 +45,11 @@ export type JobInJobsResponse = {
 export type Job = {
   title: string
   description: string
-  mode: string              
-  time: string            
-  openings: string       
-  status: string
+  mode: JobMode              
+  time: JobTime            
+  openings: number
+  seniority: Seniority
+  status: JobStatus
   tags: string[]
   employer: {
     id: string
@@ -62,10 +66,11 @@ export type Job = {
 export type JobInJobs = {
   title: string
   description: string
-  mode: string              
-  time: string            
-  openings: string       
-  status: string
+  mode: JobMode              
+  time: JobTime            
+  openings: number
+  seniority: Seniority
+  status: JobStatus
   tags: string[]
   employer: {
     id: string

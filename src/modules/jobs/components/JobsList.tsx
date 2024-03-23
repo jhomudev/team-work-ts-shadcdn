@@ -1,18 +1,16 @@
 'use client'
 
+import { useSearchParams } from "next/navigation"
 import useJobs from "../hooks/useJobs"
 import JobCardHorizontal from "./job-card/JobCardHorizontal"
 
 function JobsList() {
-  const { error, isLoading ,jobs, data, mutate} = useJobs()
+  const searchParams = useSearchParams()
+  const { error, isLoading ,jobs, data, mutate} = useJobs({searchParams})
 
-  if (isLoading) {
-    return <p>Cargando datos...</p>
-  }
-
-  if (error) {
-    return <p>Error al cargar datos</p>
-  }
+  if (isLoading) return <p>Cargando datos...</p>
+  
+  if (error) return <p>Error al cargar datos</p>
 
   const hasJobs =jobs && jobs.length > 0
 

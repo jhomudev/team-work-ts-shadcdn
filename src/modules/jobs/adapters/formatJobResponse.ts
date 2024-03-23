@@ -8,6 +8,7 @@ export const formaJobResponse = (res: JobResponse): Job => {
     mode: res.mode,
     time: res.time,
     openings: res.openings,
+    seniority: res.seniority,
     status: res.status,
     tags: res.tags,
     createdAt: res.createdAt,
