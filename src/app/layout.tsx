@@ -1,11 +1,12 @@
 import NavBar from "@/components/NavBar";
+import TopLoader from "@/components/TopLoader";
+import { Toaster } from '@/components/ui/toaster';
+import AppContextProvider from "@/providers/AppContextProvider";
+import AuthProvider from "@/providers/AuthProvider";
 import ThemeAppProvider from "@/providers/ThemeAppProvider";
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
-import { Toaster } from '@/components/ui/toaster'
-import NextTopLoader from 'nextjs-toploader';
-import AuthProvider from "@/providers/AuthProvider";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -27,24 +28,14 @@ export default function RootLayout({
       <body className={`${lato.className} bg-background`}>
         <AuthProvider>
           <ThemeAppProvider>
-            <div className="w-full min-h-[100dvh]">
-              <NextTopLoader
-                color="#0093D3"
-                initialPosition={0.08}
-                crawlSpeed={200}
-                height={6}
-                crawl={true}
-                showSpinner={false}
-                easing="ease"
-                speed={200}
-                shadow="0 0 10px #2299DD,0 0 5px #2299DD"
-                zIndex={1600}
-                showAtBottom={false}
-              />
-              <NavBar />
-              {children}
-            </div>
-            <Toaster />
+            <AppContextProvider>
+              <div className="w-full h-[100dvh]">
+                <TopLoader />
+                <NavBar />
+                {children}
+              </div>
+              <Toaster />
+            </AppContextProvider>
           </ThemeAppProvider>
         </AuthProvider>
       </body>

@@ -9,6 +9,13 @@ import { generateVerificationToken } from "@/server/actions"
 export const login = async (credentials: LoginSchemaType) => {
   try {
     const existUser = await getUser({ by: 'email', value: credentials.email })
+    if (!existUser) {
+      return {
+        ok: false,
+        message: 'Invalid credentials',
+        error: 'Invalid credentials'
+      }
+    }
     if (existUser?.email && !existUser?.emailVerified) {
       await generateVerificationToken(existUser.email)
       return {

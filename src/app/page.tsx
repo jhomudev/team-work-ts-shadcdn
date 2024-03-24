@@ -1,5 +1,4 @@
-'use client'
-import { Button } from "@/components/ui/button";
+import { auth } from "@/auth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,7 +9,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Pagination,
   PaginationContent,
@@ -19,45 +29,32 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch";
-import useAppTheme from "@/hooks/useAppTheme";
+} from "@/components/ui/select";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  const { toggleTheme } = useAppTheme()
+export default async function Home() {
+  const session = await auth()
+  if (session) redirect(DEFAULT_LOGIN_REDIRECT)
+
   return (
     <>
-      <div className="">
-        <Switch onCheckedChange={(checked) => {
-          toggleTheme()
-        }}></Switch>
-      </div>
       <Card>
         hola
       </Card>
       <div>
         <Button variant={"destructive"}>click me</Button>
         <Button variant={"link"}>click me</Button>
-        <Button variant={"ghost"}>click me</Button>
         <Button variant={"secondary"}>click me</Button>
         <Button variant={"outline"}>click me</Button>
+        <Button variant={"ghost"}>click me</Button>
       </div>
       <div className="">
       <AlertDialog>
@@ -80,7 +77,6 @@ export default function Home() {
       </AlertDialog>
       </div>
       <div className="">
-
       <Card className="w-[350px]">
       <CardHeader>
         <CardTitle>Create project</CardTitle>

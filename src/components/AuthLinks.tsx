@@ -1,20 +1,20 @@
-import { auth, signOut } from "@/auth"
-import { Button } from "./ui/button"
+import { auth } from "@/auth"
 import Link from "next/link"
+import NotificationDropdown from "./NotificationDropdown"
 import SessionUserDropdown from "./SessionUserDropdown"
+import { Button } from "./ui/button"
 
 async function AuthLinks() {
   const session = await auth()
+
   return (
     <div className="flex gap-3 items-center">
       {
         session ? (
-          <form action={async () => {
-            'use server'
-            await signOut()
-          }}>
+          <div className="flex gap-3 items-center">
             <SessionUserDropdown session={session} />
-          </form>
+            <NotificationDropdown />
+          </div>
         ): (
           <>
             <Button variant={'outline'} asChild><Link href={'/auth/login'}>Ingresar</Link></Button>

@@ -9,7 +9,7 @@ type Props = {job: JobInJobs}
 
 function JobCardHorizontal({job}: Props) {
   return (
-    <article className='relative hover:bg-muted rounded-lg p-3'>
+    <article className='relative hover:bg-accent rounded-lg py-3 px-5'>
       <Link className='absolute w-full h-full inset-0' href={`/panel/jobs/${job.id}`} />
       <div className="flex gap-3 items-center">
         <Image
@@ -19,13 +19,13 @@ function JobCardHorizontal({job}: Props) {
           width={50} height={50}
         />
         <div className="flex flex-col gap-1">
-          <Typography as='strong' variant={'largeText'} /* className='text-lg font-bold' */>{job.title}</Typography>
+          <Typography as='strong' variant={'largeText'}>{job.title}</Typography>
           <Typography as='span' variant={'mutedText'} className='text-base'>{jobTime[job.time]}</Typography>
-          <Typography as='small' variant='mutedText'>{job.employer.name} - { jobMode[job.mode] }</Typography>
+          <Typography as='span' variant='mutedText'>{job.employer.name} - { jobMode[job.mode] }</Typography>
         </div>
         <div className="ml-auto flex items-center">
           <Typography as='time' variant={'mutedText'}  asChild>
-            <time dateTime={format({ date: job.createdAt, format: 'YY-MM-DD' })} /* className="text-base" */>{ format({date: job.createdAt, format: 'long'})}</time>
+            <time dateTime={format({ date: job.createdAt, format: 'YY-MM-DD' })} >{ format({date: job.createdAt, format: 'long'})}</time>
           </Typography>
         </div>
       </div>

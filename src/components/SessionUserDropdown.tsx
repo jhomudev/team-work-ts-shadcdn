@@ -16,13 +16,13 @@ function SessionUserDropdown({ session }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={"secondary"} className="flex gap-2 items-center py-2">
+        <Button variant={"ghost"} className="flex gap-2 items-center px-4 py-3">
           <Image
-            className="rounded-full"
+            className="rounded-full aspect-square min-w-[25px]"
             src={user.image ?? '/images/user-avatar.png'}
             alt={user.name + 'avatar'}
-            width={28} height={28} />
-          <span className="text-sm">{user.name}</span>
+            width={26} height={26} />
+          <span className="hidden lg:block text-sm">{user.name}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-[200px]">
@@ -36,7 +36,7 @@ function SessionUserDropdown({ session }: Props) {
             'use server'
             await signOut()
           }}>
-            <button className="flex gap-2 items-center text-destructive" type="submit">
+            <button className="flex gap-2 items-center text-red-400" type="submit">
               <ExitIcon width={16} height={16} /> Salir
             </button>
           </form>

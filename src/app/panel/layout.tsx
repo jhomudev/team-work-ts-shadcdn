@@ -7,11 +7,11 @@ type Props = {
 
 function PanelLayout({children}: Props) {
   return (
-    <div className='w-full flex gap-10 overflow-hidden'>
+    <div className='w-full flex overflow-hidden'>
       <MenuApp />
-      <main className='w-full min-h-[calc(100dvh_-_80px)] p-5 overflow-auto'>
+      <div className='w-full max-h-[calc(100dvh_-_80px)] p-5 overflow-auto'>
         {children}
-      </main>
+      </div>
     </div>
   )
 }

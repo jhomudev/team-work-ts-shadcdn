@@ -8,7 +8,7 @@ function AuthLayout({ children }: Props) {
   return (
     <div className='w-full min-h-[calc(100dvh_-_84px)]'>
       <div className=" w-full h-[40dvh] min-h-[200px] bg-[url('/images/texture-dark.svg')] bg-cover bg-fixed bg-center" />
-      <Card className="-mt-[30%] lg:-mt-[10%]  w-full max-w-3xl mx-auto text-center">
+      <Card className="-mt-[30%] lg:-mt-[10%]  w-full max-w-3xl mx-auto text-center border-none">
         <CardHeader>
           <h1 className='text-3xl font-bold text-foreground'>Deja que los empleos lleguen a ti.</h1>
         </CardHeader>

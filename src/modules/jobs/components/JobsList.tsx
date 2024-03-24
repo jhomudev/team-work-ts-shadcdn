@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation"
 import useJobs from "../hooks/useJobs"
-import JobCardHorizontal from "./job-card/JobCardHorizontal"
+import JobCardHorizontal from "./JobCardHorizontal"
 
 function JobsList() {
   const searchParams = useSearchParams()

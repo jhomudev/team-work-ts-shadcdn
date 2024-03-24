@@ -49,7 +49,7 @@ export const POST = async (req: NextRequest) => {
     
     if (newUser) {
       //generate verification token
-      await generateVerificationToken(newUser.email)
+      //TODO: comentado solo para registrar usuarios sin enviar correos-> await generateVerificationToken(newUser.email)
 
       return NextResponse.json<ApiResponse>({
         ok: true,

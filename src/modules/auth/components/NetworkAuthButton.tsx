@@ -17,9 +17,7 @@ function NetworkAuthButton({
 }: Props) {
   return (
     <button
-      onClick={() => signIn(nextauthProvider, {
-        callbackUrl: DEFAULT_LOGIN_REDIRECT
-      })}
+      onClick={() => signIn(nextauthProvider, {callbackUrl: DEFAULT_LOGIN_REDIRECT})}
       className={`px-3 py-2 rounded-md flex-1 flex justify-center gap-2 items-center ${className} hover:brightness-95 text-foreground`} >
       <Image src={image} alt={`${name} icon`} width={20} height={20} />
       {label}

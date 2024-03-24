@@ -8,7 +8,7 @@ import { JobInJobsResponse } from '../types'
 
 type Props = {
   searchParams: ReadonlyURLSearchParams | URLSearchParams
-  swrConfig: SWRConfiguration
+  swrConfig?: SWRConfiguration
 }
 
 /**
