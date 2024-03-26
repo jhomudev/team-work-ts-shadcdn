@@ -28,7 +28,7 @@ function JobsFilters({ }: Props) {
   return (
     <div className="flex gap-3 flex-wrap w-full">
       <Select key={`seniority${searchParams.toString()}`} defaultValue={searchParams.get("seniority") ?? undefined} onValueChange={(val) => handleSelectValueInFilter(val, "seniority")}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-fit min-w-[140px]">
           <SelectValue placeholder="Nivel de experiencia" />
         </SelectTrigger>
         <SelectContent>
@@ -40,7 +40,7 @@ function JobsFilters({ }: Props) {
         </SelectContent>
       </Select>
       <Select key={`mode${searchParams.toString()}`} defaultValue={searchParams.get("mode") ?? undefined} onValueChange={(val) => handleSelectValueInFilter(val, "mode")}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-fit min-w-[140px]">
           <SelectValue placeholder="Modalidad" />
         </SelectTrigger>
           <SelectContent>
@@ -52,7 +52,7 @@ function JobsFilters({ }: Props) {
         </SelectContent>
       </Select>
       <Select key={`time${searchParams.toString()}`} defaultValue={searchParams.get("time") ?? undefined} onValueChange={(val) => handleSelectValueInFilter(val, "time")}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-fit min-w-[140px]">
           <SelectValue placeholder="Tiempo" />
         </SelectTrigger>
           <SelectContent>
