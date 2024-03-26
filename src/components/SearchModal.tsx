@@ -53,7 +53,7 @@ function SearchModal({ trigger = (<Button title="Search" variant={'ghost'} size=
               placeholder='Buscar...'
             />
           </div>
-          <Button type='submit' variant={'ghost'} size={'icon'}>
+          <Button type='submit' size={'icon'}>
             <IconSearch width={20} height={20} />
           </Button>
         </form>
